@@ -5,7 +5,7 @@ int main()
 {
 	int num = 0, i = 0;
 	printf("please enter 10 numbers\n");
-	scanf_s("%d", &num);
+	scanf("%d", &num);
 	printf("\n");
 	count_one_bits(num);
 	system("pause");

@@ -1,10 +1,15 @@
+
 #pragma warning (disable:4996)
 #include<stdio.h>
 #include<windows.h>
+#include<assert.h>
 //#include<string.h>
 
-int my_strcmp(const char *str1, const char *str2)
+int my_strcmp(const char *str1, const char *str2)   //区分字符大小写
 {
+     assert(str1);
+	assert(str2);
+
 	while (*str1&&*str2&&(*str1==*str2))
 	{
 			str1++;
@@ -13,8 +18,11 @@ int my_strcmp(const char *str1, const char *str2)
 	return *str1 - *str2;
 }
 
-int my__stricmp(char *str1,char *str2)
+int my__stricmp(char *str1,char *str2)    //不区分字符大小写
 {
+    assert(str1);
+	assert(str2);
+
 	while (*str1&&*str2 )
 	{
 		if (*str1>= 'A'&&*str1 <= 'Z')

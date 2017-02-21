@@ -33,6 +33,15 @@ int GetLinkListLen(pList plist);
 //void Insert(pList *pplist, int pos, DataType d);
 //void Erase(pList *pplist, int pos);
 
-
+//删除无头单链表的非尾结点
+void EraseNotTail(pNode pos);
+//翻转
+void ReverseList(pList* pplist);
+//在当前结点前插入一个数据d
+void InsertFrontNode(pNode pos, DataType d);
+//合并两个链表
+pList Merge(pList list1, pList list2);
+//链表冒泡排序
+void BubbleSort(pList* pplist);
 
 #endif __LinkList_H__

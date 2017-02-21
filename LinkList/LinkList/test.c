@@ -1,6 +1,6 @@
 #include"LinkList.h"
 
-pNode searchInsert(pList plist, DataType d)  
+pNode searchInsert(pList plist, DataType d)
 {
 	int i = 0;
 	pNode cur = plist;
@@ -20,7 +20,7 @@ pNode searchErase(pList plist, DataType d)  //找到指定要删除的地址
 {
 	int i = 0;
 	pNode cur = plist;
-	while (cur->next != NULL&&i<d-1)
+	while (cur->next != NULL&&i<d - 1)
 	{
 		i++;
 		cur = cur->next;
@@ -42,6 +42,10 @@ void menu()
 	printf("*****7.RemoveAll   8.ShowList***********\n");
 	printf("*****9.Insert      10.Erase*************\n");
 	printf("*****11.Destory    0.exi*****************\n");
+	printf("*****12.删除无头单链表非尾结点***********\n");
+	printf("*****13.翻转      14.在当前结点前插一个数*\n");
+	printf("*****15.合并两个有序链表非递归************\n");
+	printf("*****16.链表的冒泡排序    ***************\n");
 	printf("***************************************\n");
 }
 void test()
@@ -50,8 +54,10 @@ void test()
 	int i = 0;
 	DataType num = 0;
 	pList plist;
+	pList plist2;
 	pNode ret = NULL;
 	InitLinkList(&plist);
+	InitLinkList(&plist2);
 	do
 	{
 		menu();
@@ -63,7 +69,7 @@ void test()
 		case 1:
 			printf("请输入要从尾插入的元素>");
 			scanf("%d", &num);
-			PushBack(&plist,num);
+			PushBack(&plist, num);
 			break;
 		case 2:
 			PopBack(&plist);
@@ -71,7 +77,7 @@ void test()
 		case 3:
 			printf("请输入要从头插入的元素>");
 			scanf("%d", &num);
-			PushFront(&plist,num);
+			PushFront(&plist, num);
 			break;
 		case 4:
 			PopFront(&plist);
@@ -94,7 +100,7 @@ void test()
 		case 6:
 			printf("请输入要删除第一个的元素>");
 			scanf("%d", &num);
-			Remove(&plist,num);
+			Remove(&plist, num);
 			break;
 		case 7:
 			printf("请输入要删除的元素>");
@@ -121,7 +127,7 @@ void test()
 				  }
 				  /*Insert(&plist,i,num);*/
 		}
-				break;
+			break;
 		case 10:
 		{
 				   printf("请输入要删除第几个数字的后面的元素>");
@@ -141,6 +147,52 @@ void test()
 		case 11:
 			Destory(&plist);
 			break;
+		case 12:
+		{
+				   printf("请输入要删除的非尾结点\n");
+				   scanf("%d", &num);
+				   ret = Find(plist, num);
+				   EraseNotTail(ret);
+		}
+			break;
+		case 13:
+		{
+				   ReverseList(&plist);
+		}
+			break;
+		case 14:
+		{
+				   printf("请要插入数据位置的当前结点值\n");
+				   scanf("%d", &num);
+				   ret = Find(plist, num);
+				   if (ret == NULL)
+				   {
+					   printf("输入有误\n");
+				   }
+				   else
+				   {
+					   printf("请输入当前结点前要插入的数据\n");
+					   scanf("%d", &i);
+					   InsertFrontNode(ret, i);
+				   }
+		}
+			break;
+		case 15:
+		{
+				   PushBack(&plist2, 1);
+				   PushBack(&plist2, 3);
+				   PushBack(&plist2, 5);
+				   PushBack(&plist2, 7);
+				   plist = Merge(plist, plist2);
+		}
+			break;
+		case 16:
+		{
+				   ShowList(plist);
+				   BubbleSort(&plist);
+				   ShowList(plist);
+		}
+			break;
 		case 0:
 			Destory(&plist);
 			exit(0);
@@ -152,6 +204,7 @@ void test()
 	} while (tmep);
 	return;
 }
+
 int main()
 {
 	test();

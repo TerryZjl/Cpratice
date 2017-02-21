@@ -40,7 +40,7 @@ void PopBack(pList* pplist)
 	if (*pplist == NULL)
 	{
 		printf("链表为空\n");
-		return ;
+		return;
 	}
 	if (cur->next == NULL)
 	{
@@ -118,7 +118,7 @@ void Remove(pList* pplist, DataType d)
 	if (cur == NULL)
 	{
 		printf("链表为空，没有要删除的元素！\n");
-		return ;
+		return;
 	}
 	if (cur->data == d)
 	{
@@ -132,10 +132,10 @@ void Remove(pList* pplist, DataType d)
 		del = cur->next;
 		if (del->data == d)
 		{
-			cur->next= del->next;
+			cur->next = del->next;
 			free(del);
 			printf("已删除！\n");
-			return ;
+			return;
 		}
 		cur = cur->next;
 	}
@@ -155,35 +155,35 @@ void RemoveAll(pList* pplist, DataType d)
 		return;
 	}
 
-		while (cur->data == d)
+	while (cur->data == d)
+	{
+		*pplist = cur->next;
+		free(cur);
+		cur = *pplist;
+		if (cur == NULL)
 		{
-			*pplist = cur->next;
-			free(cur);
-			cur = *pplist;
-			if (cur == NULL)
+			printf("已删除！\n");
+			return;
+		}
+	}
+
+	while (cur->next != NULL)
+	{
+		while (cur->next->data == d)
+		{
+			del = cur->next;
+			cur->next = del->next;
+			free(del);
+			if (cur->next == NULL)
 			{
 				printf("已删除！\n");
 				return;
 			}
 		}
-	
-		while (cur->next != NULL)
-		{
-			while(cur->next->data == d)
-			{ 
-				del = cur->next;
-				cur->next = del->next;
-				free(del);
-				if (cur->next == NULL)
-				{
-					printf("已删除！\n");
-					return;
-				}
-			}
-			cur = cur->next;
-		}
-		printf("已删除！\n");
-		return;
+		cur = cur->next;
+	}
+	printf("已删除！\n");
+	return;
 }
 
 
@@ -298,7 +298,168 @@ int GetLinkListLen(pList plist)
 	{
 		count++;
 		cur = cur->next;
-	
+
 	}
 	return count;
 }
+
+//删除无头单链表的非尾结点
+void EraseNotTail(pNode pos)
+{
+	pNode del = pos->next;
+	pos->data = pos->next->data;
+	pos->next = pos->next->next;
+	free(del);
+}
+//翻转
+void ReverseList(pList* pplist)
+{
+	assert(pplist);
+
+	pNode tmp = NULL;
+	pList newlist = NULL;
+	pNode cur = *pplist;
+	if ((*pplist == NULL) || ((*pplist)->next == NULL))
+	{
+		return;
+	}
+	while (cur != NULL)
+	{
+		tmp = cur;
+		cur = cur->next;       //这里不能写在下面，若写在下面tmp->next = NULL; 就把cur的next置成空了
+		tmp->next = newlist;
+		newlist = tmp;
+	}
+	*pplist = newlist;
+	return;
+}
+
+void BubbleSort(pList* pplist)
+{
+	assert(pplist);
+	pNode cur = *pplist;
+	pNode tail = NULL;
+	pNode tmp = *pplist;
+	DataType a = 0;
+	while (cur->next != NULL)
+	{
+		tmp = *pplist;
+		tail = cur;
+		while (tail->next != NULL)
+		{
+			if (tmp->data > tmp->next->data)
+			{
+				a = tmp->data;
+				tmp->data = tmp->next->data;
+				tmp->next->data = a;
+			}
+			tmp = tmp->next;
+			tail = tail->next;
+		}
+		cur = cur->next;
+	}
+}
+
+void InsertFrontNode(pNode pos, DataType d)
+{
+	pNode newNode = (pNode)malloc(sizeof(Node));
+	newNode->data = d;
+	newNode->next = NULL;
+	newNode->next = pos->next;
+	pos->next = newNode;
+	DataType tmp = pos->data;
+	pos->data = newNode->data;
+	newNode->data = tmp;
+	return;
+}
+
+pList Merge(pList list1, pList list2)      //非递归
+{
+	pList NewList = NULL;
+	pNode tail = NULL;  //搬运工
+	if (list1 == list2)
+	{
+		return list1;
+	}
+	if (list1 == NULL)
+	{
+		return list2;
+	}
+	if (list2 == NULL)
+	{
+		return list1;
+	}
+	if (list1->data <= list2->data)
+	{
+		NewList = list1;
+		list1 = list1->next;
+	}
+	else
+	{
+		NewList = list2;
+		list2 = list2->next;
+	}
+	tail = NewList;
+	while ((list1 != NULL) && (list2 != NULL))
+	{
+		if (list1->data <= list2->data)
+		{
+			tail->next = list1;
+			tail = list1;
+			list1 = list1->next;
+		}
+		else
+		{
+			tail->next = list2;
+			tail = list2;
+			list2 = list2->next;
+		}
+	}
+	if (list1 == NULL)
+	{
+		tail->next = list2;
+	}
+	else
+	{
+		tail->next = list1;
+	}
+	return NewList;
+}
+
+
+//pList Merge(pList list1, pList list2)
+//{
+//	pList NewList = NULL;
+//	pNode tail = NULL;  //搬运工
+//	if (list1 == list2)
+//	{
+//		return list1;
+//	}
+//	if (list1 == NULL)
+//	{
+//		return list2;
+//	}
+//	if (list2 == NULL)
+//	{
+//		return list1;
+//	}
+//	if ((list1->data <= list2->data) && (list1 == NULL)&&(list1 == NULL))
+//	{
+//		NewList = Merge(list1->next, list2);
+//	}
+//	else
+//	{
+//		NewList = Merge(list1, list2->next);
+//	}
+//
+//	if (list1 == NULL)
+//	{
+//		tail->next = list2;
+//	}
+//	else
+//	{
+//		tail->next = list1;
+//	}
+//	return NewList;
+//}
+//

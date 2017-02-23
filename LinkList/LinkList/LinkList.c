@@ -90,9 +90,10 @@ void PopFront(pList* pplist)
 	}
 }
 
-pNode Find(pList plist, DataType d)
+//pNode Find(pList plist, DataType d)
+pComplexNode Find(pComplexList plist, DataType d)
 {
-	pNode cur = plist;
+	pComplexNode cur = plist;
 	if (cur == NULL)
 	{
 		printf("链表为空,");
@@ -360,7 +361,7 @@ void BubbleSort(pList* pplist)
 	}
 }
 
-void InsertFrontNode(pNode pos, DataType d)
+void InsertFrontNode(pNode pos, DataType d)    //插到当前位置的后面，然后在交换值
 {
 	pNode newNode = (pNode)malloc(sizeof(Node));
 	newNode->data = d;
@@ -427,39 +428,266 @@ pList Merge(pList list1, pList list2)      //非递归
 }
 
 
-//pList Merge(pList list1, pList list2)
+pList Merge2(pList list1, pList list2)      //递归合并有序链表
+{
+	pList NewList = NULL;
+	pNode tail = NULL;  //搬运工
+	if (list1 == list2)
+	{
+		return list1;
+	}
+	if (list1 == NULL)
+	{
+		return list2;
+	}
+	if (list2 == NULL)
+	{
+		return list1;
+	}
+	if (list1->data <= list2->data)
+	{
+		NewList = list1;
+		NewList->next = Merge2(list1->next, list2);
+	}
+	else
+	{
+		NewList = list2;
+		NewList->next = Merge2(list1, list2->next);
+	}
+
+	return NewList;
+}
+
+pNode FindMidNode(pList plist)
+{
+	pNode fast = plist;
+	pNode slow = plist;
+
+	while (fast != NULL&&fast->next != NULL)
+	{
+		fast = fast->next->next;
+		slow = slow->next;
+	}
+	return slow;
+}
+
+void DelKNode(pList* pplist, int k)
+{
+	assert(pplist);
+
+	if (k <= 1 || k > GetLinkListLen(*pplist))
+	{
+		printf("输入有误\n");
+		return;
+	}
+	pNode fast = *pplist;
+	pNode slow = *pplist;
+	pNode del = NULL;
+	while (fast->next != NULL)
+	{
+		--k;
+		if (k <= 0)
+		{
+			slow = slow->next;
+		}
+		fast = fast->next;
+	}
+	del = slow->next;
+	slow->data = slow->next->data;
+	slow->next = slow->next->next;
+	free(del);
+}
+
+pNode JosephCycle(pList* pplist, int num)
+{
+	int i = 0;
+	pNode del = NULL;
+	pNode cur = *pplist;
+	assert(pplist);
+	while (1)
+	{
+		if (cur->next == cur)
+		{
+			return cur;
+		}
+		for (i = 0; i < num-1; i++)
+		{
+			cur = cur->next;
+		}
+		del = cur->next;
+		printf("%d\n", cur->data);
+		cur->data = cur->next->data;
+		cur->next = cur->next->next;
+		free(del);
+	}
+}
+
+void PrintReversely(pList plist)
+{
+	pNode cur = plist;
+
+	if (cur->next)
+	{
+		PrintReversely(cur->next);
+	}
+	printf("%d->", cur->data);
+}
+
+//检测链表是否带环
+pNode CheckCycle(pList plist)
+{
+	pNode fast = plist;
+	pNode slow = plist;
+    
+	while (fast != NULL&&fast->next != NULL)
+	{
+		fast = fast->next->next;
+		slow = slow->next;
+		if (fast == slow)
+		{
+			return slow;
+		}
+	}
+	return NULL;
+}
+//若有环， 求环的长度
+int GetCircleLength(pList plist)
+{
+	pNode cur = plist;
+	int count = 0;
+	while(1)
+	{
+		cur = cur->next;
+		count++;
+		if (cur == plist)
+		{
+			return count;
+		}
+	}
+}
+
+pNode GetNode(pList plist, pNode meetNode)
+{
+	pNode cur = plist;
+	while (cur != meetNode)
+	{
+		cur = cur->next;
+		meetNode = meetNode->next;
+	}
+	return cur;
+}
+
+int CheckCross(pList list1, pList list2)
+{
+	if (list1 == NULL || list2 == NULL)
+	{
+		return 0;
+	}
+	while (list1->next != NULL)
+	{
+		list1 = list1->next;
+	}
+	while (list2->next != NULL)
+	{
+		list2 = list2->next;
+	}
+	if (list1 == list2)
+	{
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
+
+void PrintComplexList(pComplexList plist)
+{
+	pComplexNode cur = plist;
+	while (cur->next)
+	{
+		printf("[%d]-next>[%d]-randmo>[%d]\n", cur->data, cur->next->data, cur->randmo->data);
+		cur = cur->next;
+	}
+	printf("[%d]-next>NULL-randmo>[%d]\n", cur->data, cur->randmo->data);
+	return;
+}
+
+//pComplexNode CopyComplexList(pComplexNode* pplist)
 //{
-//	pList NewList = NULL;
-//	pNode tail = NULL;  //搬运工
-//	if (list1 == list2)
-//	{
-//		return list1;
-//	}
-//	if (list1 == NULL)
-//	{
-//		return list2;
-//	}
-//	if (list2 == NULL)
-//	{
-//		return list1;
-//	}
-//	if ((list1->data <= list2->data) && (list1 == NULL)&&(list1 == NULL))
-//	{
-//		NewList = Merge(list1->next, list2);
-//	}
-//	else
-//	{
-//		NewList = Merge(list1, list2->next);
-//	}
+//	assert(pplist);
+//	pComplexNode newNode = NULL;
+//	pComplexNode cur = *pplist;
+//	pComplexNode tail = *pplist;
+//	pComplexList list1 = *pplist;
+//	pComplexList list2 = *pplist;
 //
-//	if (list1 == NULL)
+//	//拷贝原始链表pNode,插在后面
+//	while (tail)
 //	{
-//		tail->next = list2;
+//		newNode = (pComplexNode)malloc(sizeof(ComplexNode));
+//		newNode->data = tail->data;
+//		newNode->next = tail->next;
+//		tail->next = newNode;
+//		tail = tail->next->next;
 //	}
-//	else
+//	//调整randmo指针
+//	tail = *pplist;
+//	while (tail)
 //	{
-//		tail->next = list1;
+//		tail->next->randmo = tail->randmo->next;
+//		tail = tail->next->next;
 //	}
-//	return NewList;
+//	
+//	//分离两个链表
+//	tail = (*pplist)->next;
+//	list2 = tail;
+//	while(tail->next)
+//	{
+//		list1->next = tail->next;
+//		list1 = list1->next;
+//		tail->next = list1->next;
+//		tail = tail->next;
+//	}
+//	list1->next = NULL;
+//	return list2;
 //}
-//
+pComplexNode CopyComplexList(pComplexNode plist)
+{
+	pComplexNode newNode = NULL;
+	pComplexNode cur = plist;
+	pComplexNode tail = plist;
+	pComplexList list1 = plist;
+	pComplexList list2 = plist;
+
+	//拷贝原始链表pNode,插在后面
+	while (tail)
+	{
+		newNode = (pComplexNode)malloc(sizeof(ComplexNode));
+		newNode->data = tail->data;
+		newNode->next = tail->next;
+		tail->next = newNode;
+		tail = tail->next->next;
+	}
+	//调整randmo指针
+	tail = plist;
+	while (tail)
+	{
+		tail->next->randmo = tail->randmo->next;
+		tail = tail->next->next;
+	}
+
+	//分离两个链表
+	tail = plist->next;
+	list2 = tail;
+	while (tail->next)
+	{
+		list1->next = tail->next;
+		list1 = list1->next;
+		tail->next = list1->next;
+		tail = tail->next;
+	}
+	list1->next = NULL;
+	return list2;
+}

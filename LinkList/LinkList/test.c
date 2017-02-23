@@ -46,6 +46,7 @@ void menu()
 	printf("*****13.翻转      14.在当前结点前插一个数*\n");
 	printf("*****15.合并两个有序链表非递归************\n");
 	printf("*****16.链表的冒泡排序    ***************\n");
+	printf("*****17.递归合并两个有序链表************\n");
 	printf("***************************************\n");
 }
 void test()
@@ -193,6 +194,17 @@ void test()
 				   ShowList(plist);
 		}
 			break;
+		case 17:
+		{
+				   PushBack(&plist2, 1);
+				   PushBack(&plist2, 3);
+				   ShowList(plist);
+				   ShowList(plist2);
+				   printf("合并后:\n");
+				   plist = Merge2(plist, plist2);
+				   ShowList(plist);
+		}
+				break;
 		case 0:
 			Destory(&plist);
 			exit(0);
@@ -205,8 +217,105 @@ void test()
 	return;
 }
 
+void test2()
+{
+	pList plist;
+	pList plist2;
+	pNode ret = NULL;
+	InitLinkList(&plist);
+	InitLinkList(&plist2);
+	PushBack(&plist, 1);
+	PushBack(&plist, 3);
+	PushBack(&plist, 5);
+	PushBack(&plist, 7);
+	PushBack(&plist, 8);
+
+	PushBack(&plist2, 2);
+	PushBack(&plist2, 4);
+	PushBack(&plist2, 6);
+	PushBack(&plist2, 1);
+	PushBack(&plist2, 9);
+
+	//判断两条无环链表是否相交
+	Find(plist, 8)->next = Find(plist2, 6);
+	ret = CheckCross(plist, plist2);
+	if (ret == 0)
+	{
+		printf("不相交\n");
+	}
+	else
+	{
+		printf("相交\n");
+	}
+
+	//若有环，找到环的入口点
+	//Find(plist, 8)->next = plist;
+	//ret = GetNode(plist, CheckCycle(plist));
+	//printf("%d\n", ret->data);
+	
+	//若有环，求环的长度
+	/*Find(plist, 8)->next = plist->next;
+    ret = GetCircleLength(CheckCycle(plist));
+	printf("%d\n", ret);*/
+
+	//检查是否带环
+	/*Find(plist, 8)->next = plist;
+	ret = CheckCycle(plist);
+	if (ret == NULL)
+	{
+		printf("无环\n");
+	}
+	else
+	{
+		printf("有环\n");
+	}
+    */
+
+	//逆序打印
+	/*ShowList(plist);
+	PrintReversely(plist);*/
+	
+	//约瑟夫环
+	/*Find(plist,8)->next = plist;
+	ret = JosephCycle(&plist, 3);
+	printf("end:%d\n", ret->data);*/
+
+	//删除倒数第K个
+	/*DelKNode(&plist,4);
+	ShowList(plist);*/
+
+	//查找中间的
+	/*ret = FindMidNode(plist);
+	printf("%d\n", ret->data);*/
+
+	/*Destory(&plist);*/
+}
+
+
+void test3()
+{
+	pComplexList plist;
+	pComplexNode ret = NULL;
+	InitLinkList(&plist);
+	PushBack(&plist, 1);
+	PushBack(&plist, 2);
+	PushBack(&plist, 3);
+	PushBack(&plist, 4);
+
+	Find(plist, 1)->randmo = Find(plist, 4);
+	Find(plist, 2)->randmo = Find(plist, 1);
+	Find(plist, 3)->randmo = Find(plist, 2);
+	Find(plist, 4)->randmo = Find(plist, 3);
+	printf("正版\n");
+	PrintComplexList(plist);
+    ret = CopyComplexList(plist);
+	printf("盗版\n");
+	PrintComplexList(ret);
+}
+
 int main()
 {
-	test();
+	test3();
+	system("pause");
 	return 0;
 }

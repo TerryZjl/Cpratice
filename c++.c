@@ -1,34 +1,44 @@
-#define _CRT_SECURE_NO_WARNINGS 1
-#include<iostream>
 #include<windows.h>
-#include<string.h>
-using namespace std;
-
-class dog
+struct bigdata
 {
-private: 
-	int _age;
-	char _name[10];
-public:
-	void setdata(int age , char name[]="dog" )
-	{
-		_age = age;
-		strcpy(_name, name);
-	}
-	void print()
-	{
-		cout <<"age: "<< _age << endl;
-		cout << "name: " << _name << endl;
-	}
+	int arr[1000];
 };
+void delebigdata1(bigdata& a)
+{
+	a.arr[0] = 0;
+	a.arr[1] = 1;
+	a.arr[2] = 2;
+}
+void delebigdata2(bigdata a)
+{
+	a.arr[0] = 0;
+	a.arr[1] = 1;
+	a.arr[2] = 2;
+}
+
 int main()
 {
-	dog s;
-	dog s1;
-	s1.setdata(1);
-	s.setdata(5, "wangcai");
-	s1.print();
-	s.print();
+	bigdata d;
+	int i = 0;
+	int end = 0;
+	int state = 0;
+	state = GetTickCount();
+
+	for (i = 0; i < 1000000; i++)
+	{
+		delebigdata1(d);
+	}
+	end = GetTickCount();
+	cout << end-state << endl;
+
+	state = GetTickCount();
+
+	for (i = 0; i < 1000000; i++)
+	{
+		delebigdata2(d);
+	}
+	end = GetTickCount();
+	cout << end - state << endl;
 	system("pause");
 	return 0;
 }

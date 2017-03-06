@@ -1,0 +1,83 @@
+#include<iostream>
+using namespace std;
+
+class A
+{
+private:
+	int _year; 
+	int _month;
+	int _day;
+public:
+	A(int year = 1996, int month = 2, int day = 29)
+		:_year(year), _month(month), _day(day)
+	{
+	}
+	void Display()
+	{
+		_year = 2;
+		cout << _year << endl;
+		cout << _month << endl;
+		cout << _day << endl;
+	}
+	void Display() const
+	{
+		cout << _year << endl;
+		cout << _month << endl;
+		cout << _day << endl;
+	}
+	~A()
+	{
+		cout << "~A()" << endl;
+	}
+};
+
+int main()
+{
+	A b(1,1,1);
+	b.Display();
+
+	const A b2(2,2,2);
+	b2.Display();
+	system("pause");
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

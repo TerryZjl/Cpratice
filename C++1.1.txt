@@ -1,0 +1,88 @@
+#include<iostream>
+using namespace std;
+
+class A
+{
+	friend istream& operator>>(istream& in, A& d);
+	friend ostream& operator<<(ostream& out,const A& d);
+
+private:
+	int _year; 
+	int _month;
+	int _day;
+public:
+	A(int year = 1996, int month = 2, int day = 29)
+		:_year(year), _month(month), _day(day)
+	{
+		cout << "构造函数" << endl;
+	}
+	A(const A& d)
+		:_year(d._year), _month(d._month), _day(d._day)
+	{
+		cout << "拷贝构造" << endl;
+	}
+
+	~A()
+	{
+		cout << "~A()" << endl;
+	}
+};
+
+//这个牵涉到传值和传指针，流输入输出最后操作的结果都是一个流
+//如果不用引用，那么每次传递参数或者返回结果都会生成一个新的流（传值），而使用引用后你操作的始终都是最开始的那个流（传址）
+//参数中使用引用的目的是这样的，而返回值使用引用的目的是可以然你多次操作同一个流
+
+ ostream& operator<<(ostream& out, const A& d)
+{
+	cout << d._year << "-" << d._month << "-" << d._day ;
+	return out;
+ }
+
+
+ istream& operator>>(istream& in, A& d)
+ {
+	 in >> d._year;
+	 in >> d._month;
+     in >> d._day;
+	 return in;
+ }
+
+
+int main()
+{
+	A b;
+	A a(1,2,3);
+	cout << b << a << endl;
+	
+	return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,30 @@
+#include<stdio.h>  
+#include<unistd.h>  
+#include<signal.h>  
+  
+void sig_fun()     //用户自定义抵达方法，因为是sleep所以方法什么也不做  
+{  
+}  
+  
+void mysleep(int time)  
+{  
+    struct sigaction new, old;  
+    new.sa_handler = sig_fun;  //自定义抵达方法  
+    new.sa_flags = 0;  
+    sigemptyset(&new.sa_mask); //初始化信号集为空  
+    sigaction(SIGALRM,&new,&old);  
+    alarm(time);       //设置闹钟  
+    pause();  
+    int sig = alarm(0);  
+    sigaction(SIGALRM,&old,NULL);  
+}  
+  
+int main()  
+{  
+    while(1)  
+    {  
+       mysleep(3);  
+       printf("my sleep runing\n");  
+    }  
+    return 0;  
+}  

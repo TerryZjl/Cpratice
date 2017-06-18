@@ -1,0 +1,42 @@
+#include<stdio.h>
+#include<unistd.h>
+#include<signal.h>
+#include<stdlib.h>
+int creat_daemon()
+{
+    umask(0);    //将当前进程的屏蔽子设为0，为了使子进程继承后文件有更大的权限
+    pid_t id = fork();
+    if(id == -1)
+    {
+        perror("fork");
+        return;
+    }
+    else if(id == 0)
+    {
+        setsid();  //创建一个新的会话
+        if(chdir("/")<0) //将新建会话的工作目录改成根目录
+        {
+           perror("chdir");
+           return;
+        }
+        //关闭从父进程继承来的文件
+        close(0);
+        close(1);
+        close(2);
+        signal(SIGCHLD, SIG_IGN);
+ 
+    }
+    else
+    {
+        exit(1);
+    }
+}
+
+
+int main()
+{
+    creat_daemon();
+    while(1);
+    return 0;
+}
+

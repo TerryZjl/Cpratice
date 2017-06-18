@@ -1,0 +1,150 @@
+comm.h
+[html] view plain copy
+#ifndef _COMM_H_  
+#define _COMM_H_  
+  
+#include<sys/types.h>  
+#include<sys/ipc.h>  
+#include<sys/msg.h>  
+#include<stdio.h>  
+#include<string.h>  
+#include<unistd.h>  
+#include<stdlib.h>  
+  
+#define PATH "."  
+#define PROJ_ID 0x6666  
+#define CLIENT 1  
+#define SERVER 2  
+     
+struct msgbuf   
+{  
+    long mtype;       /* message type, must be > 0 */  
+    char mtext[1024];    /* message data */             
+};  
+  
+int SendMsg(int msgid, int who,const char *str);  
+int VastuMsg(int msgid, int who, char *str);  
+int CreatMsgget();  
+int GetMsgget();  
+int DestroyMsgQueue(int msgid);  
+  
+#endif  
+
+comm.c
+[html] view plain copy
+#include"comm.h"  
+  
+static int CommMsgget(int flags)  
+{  
+     key_t _key = ftok(PATH,PROJ_ID);  
+     if(_key == -1)  
+     {  
+        perror("ftok error");  
+        return 1;  
+     }  
+     int _msg_id = msgget(_key,flags);//创建或获取消息队列  
+     if(_msg_id < 0)  
+     {  
+         perror("msgget error");  
+         return 2;  
+     }  
+      return _msg_id;  
+}  
+    
+int CreatMsgget()  
+{  
+     return CommMsgget(IPC_CREAT | IPC_EXCL | 0666);//如果将IPC_CREAT和IPC_EXCL标志>    一起\  
+     
+}  
+  
+int GetMsgget()//获取消息读列 不需要新创建  
+{  
+    return CommMsgget(IPC_CREAT);  
+}  
+int DestroyMsgQueue(int msgid)  
+{  
+    if(msgctl(msgid, IPC_RMID,NULL)<0)  
+    {  
+        perror("msgctl");  
+        return -1;  
+    }  
+}  
+  
+int SendMsg(int msgid, int who,const char *str)  
+{  
+    struct msgbuf msg;  
+    msg.mtype = who;  
+    strcpy(msg.mtext,str);  
+    int msg_snd = msgsnd(msgid, (void*)&msg, sizeof(msg),0);  
+    if(msg_snd<0)  
+    {  
+        perror("msgsnd");  
+        return -1;  
+    }  
+    return 0;  
+}  
+  
+int VastuMsg(int msgid, int who, char *str)  
+{  
+    struct msgbuf msg;  
+    int msg_rcv = msgrcv(msgid,(void*)&msg, sizeof(msg), who, 0);  
+    if(msg_rcv<0)  
+    {  
+        perror("msgrcv");  
+        return -1;  
+    }  
+    strcpy(str,msg.mtext);  
+    return 0;  
+}  
+
+server.c
+[html] view plain copy
+#include"comm.h"  
+  
+int main()  
+{  
+    int msgid = CreatMsgget();  
+    char str[1024];  
+    //printf("server creat msgget");  
+    while(1)  
+    {    
+        printf("[server say]$");  
+        fflush(stdout);  
+        ssize_t i = read(0,str,sizeof(str)-1);  
+        if(i > 0)  
+        {  
+            str[i-1] = 0;  
+            SendMsg(msgid,SERVER,str);  
+        }  
+        VastuMsg(msgid,CLIENT,str);  
+        printf("[client say]$%s\n",str);  
+    }  
+    DestroyMsgQueue(msgid);  
+   // sleep(2);  
+}  
+
+client.c
+[html] view plain copy
+#include"comm.h"  
+  
+int main()  
+{  
+    char str[1024];  
+    int msgid = GetMsgget();  
+   
+    while(1)  
+    {  
+        VastuMsg(msgid,SERVER,str);  
+        printf("[server say]$%s\n",str);  
+         
+        printf("[client say]$");  
+        fflush(stdout);  
+        ssize_t i = read(0,str,sizeof(str)-1);  
+        if(i>0)  
+        {  
+            str[i-1] = 0;  
+            SendMsg(msgid,CLIENT,str);  
+        }  
+    }  
+    return 0;  
+}  

@@ -1,0 +1,19 @@
+
+void EndZero(int n)
+{
+	int sum = 0;
+	sum += n*(n - 1);
+	n -= 2;
+	while (n)
+	{
+		sum = sum*n ;
+		n--;
+	}
+	int count = 0;
+	while (sum % 10 == 0)
+	{
+		count++;
+		sum /= 10;
+	}
+	printf("%d, %d\n", sum,count);
+}

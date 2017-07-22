@@ -1,0 +1,41 @@
+
+int Statistics(int a[],int size)
+{
+	int count = 0;
+	int num = a[0];
+	count++;
+	for (int i = 1; i < size;i++)
+	{
+		if (num == a[i])
+		{
+			count++;
+		}
+		else
+		{
+			count--;
+		}
+		if (count == 0)
+		{
+			i++;
+			if (i < size)
+			{
+				num = a[i];
+				count++;
+			}
+		}
+	}
+	if (count == 0)
+	{
+		return -1;
+	}
+	else
+	{
+		return num;
+	}
+}
+int main()
+{
+	int a[] = { 2, 8,8, 8, 8, 8, 2, 8, 3, 3, 8, 2 };
+	int ret =Statistics(a,sizeof(a)/sizeof(a[0]));
+	cout << ret << endl;
+}
